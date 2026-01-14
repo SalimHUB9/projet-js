@@ -15,11 +15,11 @@ function initAPI() {
     const q = searchInput.value.trim();
 
     if (!q) {
-      apiTable.innerHTML = `<tr><td colspan="3">Veuillez saisir un titre</td></tr>`;
+      apiTable.innerHTML = `<tr><td colspan="4">Veuillez saisir un titre</td></tr>`;
       return;
     }
 
-    apiTable.innerHTML = `<tr><td colspan="3">Recherche en cours...</td></tr>`;
+    apiTable.innerHTML = `<tr><td colspan="4">Recherche en cours...</td></tr>`;
 
     fetch(`https://www.omdbapi.com/?s=${encodeURIComponent(q)}&apikey=${API_KEY}`)
       .then(r => r.json())
@@ -27,7 +27,7 @@ function initAPI() {
         apiTable.innerHTML = "";
 
         if (d.Response === "False") {
-          apiTable.innerHTML = `<tr><td colspan="3">Aucun résultat trouvé</td></tr>`;
+          apiTable.innerHTML = `<tr><td colspan="4">Aucun résultat trouvé</td></tr>`;
           return;
         }
 
@@ -37,12 +37,38 @@ function initAPI() {
               <td>${m.Title}</td>
               <td>${m.Year}</td>
               <td>${m.Type}</td>
+              <td>
+                <button onclick="addFromAPI('${m.imdbID}')">➕</button>
+              </td>
             </tr>
           `;
         });
       })
       .catch(() => {
-        apiTable.innerHTML = `<tr><td colspan="3">Erreur API</td></tr>`;
+        apiTable.innerHTML = `<tr><td colspan="4">Erreur API</td></tr>`;
       });
   }
+}
+
+/* ===== Add movie from OMDb into CineTech ===== */
+
+function addFromAPI(imdbID) {
+
+  fetch(`https://www.omdbapi.com/?i=${imdbID}&apikey=${API_KEY}`)
+    .then(r => r.json())
+    .then(movie => {
+
+      const film = {
+        titre: movie.Title,
+        genre: movie.Genre ? movie.Genre.split(",")[0] : "Unknown",
+        annee: movie.Year,
+        note: movie.imdbRating !== "N/A" ? Number(movie.imdbRating) : 5
+      };
+
+      films.push(film);
+      localStorage.setItem("films", JSON.stringify(films));
+      renderFilms();
+
+      alert("Film ajouté au Dashboard ✅");
+    });
 }

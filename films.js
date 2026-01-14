@@ -2,10 +2,13 @@ let films = JSON.parse(localStorage.getItem("films")) || [];
 const table = document.getElementById("filmsTable");
 let editIndex = null;
 
-function renderFilms() {
+const searchInput = document.getElementById("searchFilm");
+const sortSelect = document.getElementById("sortFilm");
+
+function renderFilms(list = films) {
   table.innerHTML = "";
 
-  films.forEach((f, i) => {
+  list.forEach((f, i) => {
     table.innerHTML += `
       <tr>
         <td>${f.titre}</td>
@@ -23,6 +26,39 @@ function renderFilms() {
   localStorage.setItem("films", JSON.stringify(films));
   updateDashboard();
 }
+
+/* ===== Recherche ===== */
+searchInput.oninput = () => {
+  const q = searchInput.value.toLowerCase();
+
+  const filtered = films.filter(f =>
+    f.titre.toLowerCase().includes(q) ||
+    f.genre.toLowerCase().includes(q) ||
+    f.annee.toString().includes(q)
+  );
+
+  renderFilms(filtered);
+};
+
+/* ===== Tri ===== */
+sortSelect.onchange = () => {
+  const value = sortSelect.value;
+  let sorted = [...films];
+
+  if (value === "titre") {
+    sorted.sort((a, b) => a.titre.localeCompare(b.titre));
+  }
+  if (value === "note") {
+    sorted.sort((a, b) => b.note - a.note);
+  }
+  if (value === "annee") {
+    sorted.sort((a, b) => b.annee - a.annee);
+  }
+
+  renderFilms(sorted);
+};
+
+/* ===== CRUD ===== */
 
 function deleteFilm(i) {
   if (confirm("Supprimer ce film ?")) {
@@ -60,7 +96,7 @@ document.getElementById("filmForm").onsubmit = e => {
   }
 
   renderFilms();
-   e.target.reset();
+  e.target.reset();
 };
 
 renderFilms();
