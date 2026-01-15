@@ -50,7 +50,7 @@ function initAPI() {
   }
 }
 
-/* ===== Add movie from OMDb into CineTech ===== */
+
 
 function addFromAPI(imdbID) {
 
