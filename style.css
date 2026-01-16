@@ -233,7 +233,7 @@ ul li {
   background: #0f0f0f;
   color: white;
 }
-/* Align search + sort button */
+
 .film-tools {
   display: flex;
   align-items: center;
@@ -248,7 +248,7 @@ ul li {
   display: flex;
   align-items: center;
 }
-/* Fine vertical alignment for sort button */
+
 .sort-box select {
   height: 48px;           
   display: flex;
@@ -258,5 +258,16 @@ ul li {
 
 .film-tools {
   align-items: stretch;  
+}
+.actions {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+}
+
+.actions button {
+  width: auto;
+  padding: 8px 12px;
+  border-radius: 10px;
 }
 
