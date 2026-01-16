@@ -1,55 +1,43 @@
-let chart = null;
+let chart;
 
 function updateDashboard() {
-  // قراءة مباشرة من localStorage
-  const filmsLS = JSON.parse(localStorage.getItem("films")) || [];
-  const realsLS = JSON.parse(localStorage.getItem("reals")) || [];
 
-  // KPI
-  document.getElementById("kpi-films").innerText = filmsLS.length;
-  document.getElementById("kpi-reals").innerText = realsLS.length;
+  document.getElementById("kpi-films").innerText = films.length;
+  document.getElementById("kpi-reals").innerText = reals.length;
 
-  let avg = 0;
-  if (filmsLS.length > 0) {
-    avg = (
-      filmsLS.reduce((s, f) => s + Number(f.note), 0) / filmsLS.length
-    ).toFixed(1);
+  let moyenne = 0;
+  if (films.length > 0) {
+    const somme = films.reduce((t, f) => t + Number(f.note), 0);
+    moyenne = (somme / films.length).toFixed(1);
   }
-  document.getElementById("kpi-moyenne").innerText = avg.replace(".", ",");
 
-  // Table détails
-  const tbody = document.getElementById("dashboardFilms");
-  tbody.innerHTML = "";
-  filmsLS.slice(-5).reverse().forEach(f => {
-    tbody.innerHTML += `
-      <tr>
-        <td>${f.titre}</td>
-        <td>${f.genre}</td>
-        <td>${f.annee}</td>
-        <td>${f.note}</td>
-        <td>${f.realisateur}</td>
-        <td>${f.source}</td>
-      </tr>
-    `;
-  });
+  document.getElementById("kpi-moyenne").innerText =
+    Number(moyenne).toLocaleString("fr-FR");
 
-  // Chart
-  chart = new Chart(canvas.getContext("2d"), {
-  type: "bar",
-  data: {
-    labels: filmsLS.map(f => f.titre),
-    datasets: [{
-      label: "Notes des films",
-      data: filmsLS.map(f => Number(f.note)),
-      backgroundColor: "#e10600"
-    }]
-  },
-  options: {
-    responsive: false,
-    scales: {
-      y: { beginAtZero: true, max: 10 }
+  const labels = films.map(f => f.titre);
+  const values = films.map(f => Number(f.note));
+
+  const ctx = document.getElementById("filmsChart");
+  if (chart) chart.destroy();
+
+  chart = new Chart(ctx, {
+    type: "bar",
+    data: {
+      labels,
+      datasets: [{
+        label: "Notes des films (/10)",
+        data: values,
+        backgroundColor: "#e10600",
+        barThickness: 30
+      }]
+    },
+    options: {
+      responsive: true,
+      scales: {
+        y: { beginAtZero: true, max: 10 }
+      }
     }
-  }
-});
-
+  });
 }
+
+updateDashboard();
