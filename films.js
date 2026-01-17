@@ -129,15 +129,28 @@ document.getElementById("filmForm").onsubmit = e => {
 function showDetails(i) {
   const f = films[i];
 
-  alert(
-    `🎬 Détails du film\n\n` +
-    `Titre : ${f.titre}\n` +
-    `Genre : ${f.genre}\n` +
-    `Année : ${f.annee}\n` +
-    `Note : ${f.note}/10\n` +
-    `Réalisateur : ${f.realisateur}`
-  );
+  document.getElementById("dTitre").innerText = f.titre;
+  document.getElementById("dGenre").innerText = f.genre;
+  document.getElementById("dAnnee").innerText = f.annee;
+  document.getElementById("dNote").innerText = `${f.note}/10`;
+  document.getElementById("dRealisateur").innerText =
+    f.realisateur ?? "Non défini";
+
+  document.getElementById("detailsModal").style.display = "flex";
 }
+
+function closeDetails() {
+  document.getElementById("detailsModal").style.display = "none";
+}
+
+
+window.onclick = e => {
+  const modal = document.getElementById("detailsModal");
+  if (e.target === modal) {
+    closeDetails();
+  }
+};
+
 
 
 
